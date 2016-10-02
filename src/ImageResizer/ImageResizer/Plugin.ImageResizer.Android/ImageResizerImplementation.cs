@@ -1,6 +1,5 @@
 using Android.Graphics;
 using Plugin.ImageResizer.Abstractions;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -9,22 +8,24 @@ namespace Plugin.ImageResizer
     /// <summary>
     /// Implementation for Feature
     /// </summary>
-    public class ImageResizerImplementation : IImageResizer
+    public class ImageResizerImplementation : ImageResizerBase
     {
-        public async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int maxWidth, int maxHeight)
+        /// <summary>
+        /// Resizes an image with the target width/height while maintaining aspect ratio.
+        /// </summary>
+        /// <param name="sourceImage">The source image</param>
+        /// <param name="targetWidth">The target width in pixels</param>
+        /// <param name="targetHeight">The target height in pixels</param>
+        /// <returns>byte[] of resized image</returns>
+        public override async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight)
         {
             return await Task.Run(() =>
             {
                 using (var originalImage = BitmapFactory.DecodeByteArray(sourceImage, 0, sourceImage.Length))
                 {
-                    // Determine the ratio
-                    var ratioX = (double)maxWidth / originalImage.Width;
-                    var ratioY = (double)maxHeight / originalImage.Height;
-                    var ratio = Math.Min(ratioX, ratioY);
+                    CalculateNewWidthAndHeight(originalImage.Width, targetWidth, originalImage.Height, targetHeight);
 
-                    var newWidth = (int)(originalImage.Width * ratio);
-                    var newHeight = (int)(originalImage.Height * ratio);
-                    using (var resizedImage = Bitmap.CreateScaledBitmap(originalImage, newWidth, newHeight, false))
+                    using (var resizedImage = Bitmap.CreateScaledBitmap(originalImage, NewWidth, NewHeight, false))
                     {
                         using (var ms = new MemoryStream())
                         {

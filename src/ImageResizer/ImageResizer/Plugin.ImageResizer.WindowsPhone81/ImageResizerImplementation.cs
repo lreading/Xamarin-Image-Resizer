@@ -1,9 +1,6 @@
 using Plugin.ImageResizer.Abstractions;
 using System;
 using System.IO;
-using Windows.Storage.Streams;
-using Windows.Graphics.Imaging;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 
 namespace Plugin.ImageResizer
@@ -11,9 +8,16 @@ namespace Plugin.ImageResizer
     /// <summary>
     /// Implementation for ImageResizer
     /// </summary>
-    public class ImageResizerImplementation : IImageResizer
+    public class ImageResizerImplementation : ImageResizerBase
     {
-        public Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int maxWidth, int maxHeight)
+        /// <summary>
+        /// Resizes an image with the target width/height while maintaining aspect ratio.
+        /// </summary>
+        /// <param name="sourceImage">The source image</param>
+        /// <param name="targetWidth">The target width in pixels</param>
+        /// <param name="targetHeight">The target height in pixels</param>
+        /// <returns>byte[] of resized image</returns>
+        public override Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight)
         {
             throw new PlatformNotSupportedException();
         }
