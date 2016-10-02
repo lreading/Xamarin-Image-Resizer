@@ -20,12 +20,12 @@ As with any Xamarin Plugins, be sure to install the package to your shared code 
 This can be used with a stream (if you're using the Media Plugin https://github.com/jamesmontemagno/MediaPlugin) or standard byte arrays.
 
     // If you already have the byte[]
-    var resizedImage = await CrossImageResizer.Current.ResizeImageWithAspectRatioAsync(originalImageBytes, 500, 1000);
+    byte[] resizedImage = await CrossImageResizer.Current.ResizeImageWithAspectRatioAsync(originalImageBytes, 500, 1000);
     
     // If you have a stream, such as:
     // var file = await CrossMedia.Current.PickPhotoAsync(options);
     // var originalImageStream = file.GetStream();
-    var resizedImage = await CrossImageResizer.Current.ResizeImageWithAspectRatioAsync(originalImageStream, 500, 1000);
+    byte[] resizedImage = await CrossImageResizer.Current.ResizeImageWithAspectRatioAsync(originalImageStream, 500, 1000);
 
 
 
