@@ -4,7 +4,7 @@ Cross platform Xamarin plugin to resize images on a mobile device.  This can be 
 #Platforms
  - Android
  - iOS (untested)
- - WindowsPhone8
+ - WindowsPhone8 (untested)
  
 #TODO
  - UWP
