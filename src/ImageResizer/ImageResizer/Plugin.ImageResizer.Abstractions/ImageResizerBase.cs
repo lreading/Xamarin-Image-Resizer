@@ -1,27 +1,28 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Plugin.ImageResizer.Abstractions
 {
-  /// <summary>
-  /// Interface for ImageResizer
-  /// </summary>
-  public interface IImageResizer
+    /// <summary>
+    /// Base class for resizing images on individual platforms.
+    /// </summary>
+    public abstract class ImageResizerBase : IImageResizer
     {
         /// <summary>
         /// The new height in pixels to be used for resizing the image
         /// </summary>
-        int NewHeight { get; }
+        public int NewHeight { get; private set; }
 
         /// <summary>
         /// The new width in pixels to be used for resizing the image
         /// </summary>
-        int NewWidth { get; }
+        public int NewWidth { get; private set; }
 
         /// <summary>
         /// The ratio used to calculate the new width/height
         /// </summary>
-        double Ratio { get; }
+        public double Ratio { get; private set; }
 
         /// <summary>
         /// Resizes an image with the target width/height while maintaining aspect ratio.
@@ -30,7 +31,7 @@ namespace Plugin.ImageResizer.Abstractions
         /// <param name="targetWidth">The target width in pixels</param>
         /// <param name="targetHeight">The target height in pixels</param>
         /// <returns>byte[] of resized image</returns>
-        Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight);
+        public abstract Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight);
 
         /// <summary>
         /// Resizes an image with the target width/height while maintaining aspect ratio.
@@ -39,7 +40,11 @@ namespace Plugin.ImageResizer.Abstractions
         /// <param name="targetWidth">The target width in pixels</param>
         /// <param name="targetHeight">The target height in pixels</param>
         /// <returns>byte[] of resized image</returns>
-        Task<byte[]> ResizeImageWithAspectRatioAsync(Stream sourceImage, int targetWidth, int targetHeight);
+        public async Task<byte[]> ResizeImageWithAspectRatioAsync(Stream sourceImage, int targetWidth, int targetHeight)
+        {
+            var originalBytes = ReadBytesFully(sourceImage);
+            return await ResizeImageWithAspectRatioAsync(originalBytes, targetWidth, targetHeight);
+        }
 
         /// <summary>
         /// Reads all bytes from a stream.
@@ -49,8 +54,20 @@ namespace Plugin.ImageResizer.Abstractions
         /// </remarks>
         /// <param name="input"></param>
         /// <returns>All bytes from the stream</returns>
-        byte[] ReadBytesFully(Stream input);
-
+        public byte[] ReadBytesFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+        
         /// <summary>
         /// Calculates the new widths and heights to use based on the existing
         /// widths/heights and the target widths/heights
@@ -62,6 +79,16 @@ namespace Plugin.ImageResizer.Abstractions
         /// <param name="targetWidth"></param>
         /// <param name="originalHeight"></param>
         /// <param name="targetHeight"></param>
-        void CalculateNewWidthAndHeight(int originalWidth, int targetWidth, int originalHeight, int targetHeight);
+        public void CalculateNewWidthAndHeight(int originalWidth, int targetWidth, int originalHeight, int targetHeight)
+        {
+            // Determine the ratio
+            var ratioX = (double)targetWidth / originalWidth;
+            var ratioY = (double)targetHeight / originalHeight;
+            Ratio = Math.Min(ratioX, ratioY);
+
+            // Calculate the new width/height
+            NewWidth = (int)(originalWidth * Ratio);
+            NewHeight = (int)(originalHeight * Ratio);
+        }
     }
 }

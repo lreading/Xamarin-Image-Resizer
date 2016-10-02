@@ -4,15 +4,23 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using UIKit;
+using System.IO;
 
 namespace Plugin.ImageResizer
 {
     /// <summary>
     /// Implementation for ImageResizer
     /// </summary>
-    public class ImageResizerImplementation : IImageResizer
+    public class ImageResizerImplementation : ImageResizerBase
     {
-        public async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int maxWidth, int maxHeight)
+        /// <summary>
+        /// Resizes an image with the target width/height while maintaining aspect ratio.
+        /// </summary>
+        /// <param name="sourceImage">The source image</param>
+        /// <param name="targetWidth">The target width in pixels</param>
+        /// <param name="targetHeight">The target height in pixels</param>
+        /// <returns>byte[] of resized image</returns>
+        public override async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight)
         {
             return await Task.Run(() =>
             {
@@ -20,18 +28,13 @@ namespace Plugin.ImageResizer
                 {
                     var orientation = originalImage.Orientation;
 
-                    var ratioX = (double)maxWidth / originalImage.Size.Width;
-                    var ratioY = (double)maxHeight / originalImage.Size.Height;
-                    var ratio = Math.Min(ratioX, ratioY);
-
-                    var newWidth = (int)(originalImage.Size.Width * ratio);
-                    var newHeight = (int)(originalImage.Size.Height * ratio);
+                    CalculateNewWidthAndHeight((int)originalImage.Size.Width, targetWidth, (int)originalImage.Size.Height, targetHeight);
 
                     //create a 24bit RGB image
-                    using (var context = new CGBitmapContext(IntPtr.Zero, newWidth, newHeight, 8, (4 * newWidth),
+                    using (var context = new CGBitmapContext(IntPtr.Zero, NewWidth, NewHeight, 8, (4 * NewWidth),
                         CGColorSpace.CreateDeviceRGB(), CGImageAlphaInfo.PremultipliedFirst))
                     {
-                        var imageRect = new RectangleF(0, 0, newWidth, newHeight);
+                        var imageRect = new RectangleF(0, 0, NewWidth, NewHeight);
 
                         // draw the image
                         context.DrawImage(imageRect, originalImage.CGImage);

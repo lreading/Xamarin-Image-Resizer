@@ -1,6 +1,5 @@
 using Microsoft.Phone;
 using Plugin.ImageResizer.Abstractions;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -10,34 +9,33 @@ namespace Plugin.ImageResizer
     /// <summary>
     /// Implementation for ImageResizer
     /// </summary>
-    public class ImageResizerImplementation : IImageResizer
+    public class ImageResizerImplementation : ImageResizerBase
     {
-        public async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int maxWidth, int maxHeight)
+
+        /// <summary>
+        /// Resizes an image with the target width/height while maintaining aspect ratio.
+        /// </summary>
+        /// <param name="sourceImage">The source image</param>
+        /// <param name="targetWidth">The target width in pixels</param>
+        /// <param name="targetHeight">The target height in pixels</param>
+        /// <returns>byte[] of resized image</returns>
+        public override async Task<byte[]> ResizeImageWithAspectRatioAsync(byte[] sourceImage, int targetWidth, int targetHeight)
         {
             return await Task.Run(() =>
             {
-                int newWidth;
-                int newHeight;
-
                 using (var originalMs = new MemoryStream(sourceImage))
                 {
                     var originalImage = PictureDecoder.DecodeJpeg(originalMs);
-
-                    var ratioX = (double)maxWidth / originalImage.PixelWidth;
-                    var ratioY = (double)maxHeight / originalImage.PixelHeight;
-                    var ratio = Math.Min(ratioX, ratioY);
-
-                    newWidth = (int)(originalImage.PixelWidth * ratio);
-                    newHeight = (int)(originalImage.PixelHeight * ratio);
+                    CalculateNewWidthAndHeight(originalImage.PixelWidth, targetWidth, originalImage.PixelHeight, targetHeight);
                 }
 
                 using (var newImgMs = new MemoryStream(sourceImage))
                 {
-                    var bitmap = PictureDecoder.DecodeJpeg(newImgMs, newWidth, newHeight);
+                    var bitmap = PictureDecoder.DecodeJpeg(newImgMs, NewWidth, NewHeight);
 
                     using (var streamOut = new MemoryStream())
                     {
-                        bitmap.SaveJpeg(streamOut, newWidth, newHeight, 0, 100);
+                        bitmap.SaveJpeg(streamOut, NewWidth, NewHeight, 0, 100);
                         return streamOut.ToArray();
                     }
                 }
