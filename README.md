@@ -16,7 +16,7 @@ Install via NuGet: https://www.nuget.org/packages/Plugin.ImageResizer
     Install-Package Plugin.ImageResizer -Pre
 As with any Xamarin Plugins, be sure to install the package to your shared code _and_ platform-specific implementations.
 
-#How to Use
+# How to Use
 This can be used with a stream (if you're using the Media Plugin https://github.com/jamesmontemagno/MediaPlugin) or standard byte arrays.
 
     // If you already have the byte[]
