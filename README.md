@@ -1,17 +1,17 @@
 # Xamarin Image Resizer
 Cross platform Xamarin plugin to resize images while maintaining aspect ratio on a mobile device.  This can be particularly useful when passing an image to an API.
 
-#Platforms
+# Platforms
  - Android
  - iOS (untested)
  - WindowsPhone8 (untested)
  
-#TODO
+# TODO
  - UWP
  - WindowsPhone81
  - WindowsStore
 
-#Installation
+# Installation
 Install via NuGet: https://www.nuget.org/packages/Plugin.ImageResizer
     Install-Package Plugin.ImageResizer -Pre
 As with any Xamarin Plugins, be sure to install the package to your shared code _and_ platform-specific implementations.
@@ -29,7 +29,7 @@ This can be used with a stream (if you're using the Media Plugin https://github.
 
 
 
-#Thanks
-https://github.com/jamesmontemagno/Xamarin-Templates/tree/master/Plugins-Templates (Big shout out to James Montemagno for the work he's done with Xamarin, especially creating the concept of Xamarin Plugins)
-https://github.com/xamarin/xamarin-forms-samples/tree/master/XamFormsImageResize
-http://stackoverflow.com/a/6501997/3033053
+# Thanks
+ - https://github.com/jamesmontemagno/Xamarin-Templates/tree/master/Plugins-Templates (Big shout out to James Montemagno for the work he's done with Xamarin, especially creating the concept of Xamarin Plugins)
+ - https://github.com/xamarin/xamarin-forms-samples/tree/master/XamFormsImageResize
+ - http://stackoverflow.com/a/6501997/3033053
