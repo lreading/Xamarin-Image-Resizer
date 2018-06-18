@@ -1,3 +1,6 @@
+# Unmaintained
+This code base is not being maintained.
+
 # Xamarin Image Resizer
 Cross platform Xamarin plugin to resize images while maintaining aspect ratio on a mobile device.  This can be particularly useful when passing an image to an API.
 
